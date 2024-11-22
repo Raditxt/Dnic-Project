@@ -54,8 +54,8 @@
   --tp-common-black: #151718;
   --tp-common-black-2: #52525C;
   --tp-common-black-3: #1F2021;
-  --tp-common-yellow: #EED064;
-  --tp-common-yellow-2: #FDFAEF;
+  --tp-common-yellow: #fff200c0;
+  --tp-common-yellow-2: #f5f551d7;
   --tp-common-green: #33CC79;
   --tp-common-green-2: #EBFAF2;
   --tp-common-blue: #EEEEFD;
@@ -71,7 +71,7 @@
   --tp-grey-5: #888888;
   --tp-grey-6: #F7F7F7;
   --tp-grey-7: #F6F6F6;
-  --tp-text-body: #6A6A74;
+  --tp-text-body: #000;
   --tp-text-p: #6A6A74;
   --tp-theme-1: #6864ED;
   --tp-border-1: #F5F5F5;
@@ -1391,8 +1391,8 @@ input[type=color] {
   }
 }
 .tpoffcanvas__logo img {
-  width: 140px;
-  height: 100%;
+  width: 200px;
+  height: 60px;
 }
 .tpoffcanvas__close-btn button {
   font-size: 35px;
@@ -2132,9 +2132,6 @@ input[type=color] {
   }
 }
 
-.tp-logo img {
-  width: 142px;
-}
 
 .tp-main-menu ul {
   text-align: center;
