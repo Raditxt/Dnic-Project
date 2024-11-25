@@ -84,16 +84,16 @@
         } 
     }
     &.tp-twitter{
-        border-bottom: 3px solid #1DA1F2;
+        border-bottom: 3px solid #e20f0f;
         &:hover{
-            background-color: #1DA1F2;
+            background-color: #e20f0f;
             & i{
                 color: var(--tp-common-white);
             }
         }
       & span{
             & i{
-                color: #1DA1F2;
+                color: #e20f0f;
             }
         } 
     }

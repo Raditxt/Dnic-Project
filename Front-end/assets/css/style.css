@@ -6345,7 +6345,7 @@ blockquote cite::before {
   border-bottom: 3px solid #1DA1F2;
 }
 .tp-social-item.tp-twitter:hover {
-  background-color: #1DA1F2;
+  background-color: #e01b14;
 }
 .tp-social-item.tp-twitter:hover i {
   color: var(--tp-common-white);
