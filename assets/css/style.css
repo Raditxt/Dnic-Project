@@ -6321,7 +6321,7 @@ blockquote cite::before {
   border-bottom: 3px solid #1DA1F2;
 }
 .tp-social-item.tp-behance:hover {
-  background-color: #1DA1F2;
+  background-color: #14b91a;
 }
 .tp-social-item.tp-behance:hover i {
   color: var(--tp-common-white);
