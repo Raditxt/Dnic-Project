@@ -33,7 +33,7 @@
             font-size: 19px;   
         }
         & i{
-            color: #4064AC;
+            color: #e41f11;
             margin-right: 10px;
             transition: .3s;
             @media #{$lg} {
@@ -88,7 +88,7 @@
         &:hover{
             background-color: #e20f0f;
             & i{
-                color: var(--tp-common-white);
+                color: #e41f11;
             }
         }
       & span{
