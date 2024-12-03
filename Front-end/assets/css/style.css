@@ -3229,7 +3229,7 @@ input[type=color] {
 .tp-slider-exp-item__icon {
   height: 50px;
   width: 50px;
-  background-color: var(--tp-common-yellow);
+  background-color: var(--tp-common-deep-blue);
   border-radius: 50%;
   text-align: center;
   line-height: 50px;

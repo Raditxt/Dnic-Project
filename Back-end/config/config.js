@@ -1,4 +1,4 @@
-require('dotenv').config(); // Memuat file .env
+require('dotenv').config();
 
 module.exports = {
     development: {
