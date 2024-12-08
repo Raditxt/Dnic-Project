@@ -247,6 +247,28 @@ button:focus {
   outline: 0;
 }
 
+
+.Login{
+  background-color: var(--tp-common-black-3);
+  color: var(--tp-common-yellow);
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
+.Sign-up{
+  background-color: var(--tp-common-yellow);
+  color: var(--tp-common-black);
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+}
+
 .uppercase {
   text-transform: uppercase;
 }
