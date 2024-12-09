@@ -1,123 +1,128 @@
-/* CSS untuk form login */
-
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
+    background-color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #f9f9f9;
-  }
-  
-  .login-container {
-    display: flex;
-    width: 900px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    background-color: white;
-  }
-  
-  .login-image {
-    flex: 1;
-  }
-  
-  .login-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .login-form {
-    flex: 1;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  
-  h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
+    margin: 0;
+}
+.container {
     text-align: center;
-  }
-  
-  .form-group {
+    width: 100%;
+    max-width: 450px;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.logo {
+    width: 50px;
+    height: 50px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+}
+h2 {
+    font-size: 24px;
     margin-bottom: 20px;
-  }
-  
-  input[type="email"],
-  input[type="password"] {
-    width: 100%;
-    padding: 10px 15px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  input[type="email"]:focus,
-  input[type="password"]:focus {
-    outline: none;
-    border-color: #7b6cf6;
-  }
-  
-  .form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+}
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+.input-group label {
+    display: block;
     font-size: 14px;
-  }
-  
-  .forgot-password {
-    color: #7b6cf6;
-    text-decoration: none;
-  }
-  
-  .forgot-password:hover {
-    text-decoration: underline;
-  }
-  
-  .login-button {
+    margin-bottom: 5px;
+}
+.input-group input {
     width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    color: white;
-    background-color: #7b6cf6;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.input-group .password-toggle {
+    position: relative;
+}
+.input-group .password-toggle input {
+    padding-right: 40px;
+}
+.input-group .password-toggle .toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+.btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #ccc;
     border: none;
     border-radius: 5px;
+    font-size: 16px;
+    color: #fff;
     cursor: pointer;
-  }
-  
-  .login-button:hover {
-    background-color: #6759d6;
-  }
-  
-  .social-login {
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .social-login p {
-    margin-bottom: 10px;
+}
+.terms {
+    font-size: 12px;
     color: #888;
-  }
-  
-  .social-icons {
+    margin-top: 10px;
+}
+.terms a {
+    color: #888;
+    text-decoration: none;
+}
+.links {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-top: 10px;
+}
+.links a {
+    color: #888;
+    text-decoration: none;
+}
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+}
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #e0e0e0;
+}
+.divider::before {
+    margin-right: 10px;
+}
+.divider::after {
+    margin-left: 10px;
+}
+.create-account {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #000;
+    background-color: #fff;
+    cursor: pointer;
+}
+.footer {
     display: flex;
     justify-content: center;
-    gap: 15px;
-  }
-  
-  .social-icons a {
-    color: #7b6cf6;
-    font-size: 20px;
+    font-size: 12px;
+    color: #888;
+    margin-top: 20px;
+}
+.footer a {
+    color: #888;
     text-decoration: none;
-  }
-  
-  .social-icons a:hover {
-    color: #6759d6;
-  }
-  
+    margin: 0 5px;
+}
