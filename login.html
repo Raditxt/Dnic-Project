@@ -1,80 +1,90 @@
-<html>
-<head>
-<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign In</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> 
-    <link rel="stylesheet" href="assets/css/login.css">
-=======
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
-  
-  <!-- CSS Bootstrap untuk tata letak dasar -->
-  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/login.css" />
 
-  <!-- Font Awesome untuk ikon media sosial -->
-  <link rel="stylesheet" href="assets/css/font-awesome-pro.css">
+    <!-- CSS Bootstrap untuk tata letak dasar -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
 
-  <!-- Animasi tambahan jika diperlukan -->
-  <link rel="stylesheet" href="assets/css/animate.css">
+    <!-- Font Awesome untuk ikon media sosial -->
+    <link rel="stylesheet" href="assets/css/font-awesome-pro.css" />
 
-  <!-- Custom animation jika diperlukan -->
-  <link rel="stylesheet" href="assets/css/custom-animation.css">
+    <!-- Animasi tambahan jika diperlukan -->
+    <link rel="stylesheet" href="assets/css/animate.css" />
 
-  <!-- File utama styling login -->
-  <link rel="stylesheet" href="assets/css/login.css">
+    <!-- Custom animation jika diperlukan -->
+    <link rel="stylesheet" href="assets/css/custom-animation.css" />
 
-  <!-- File lain jika ada efek tambahan -->
-  <link rel="stylesheet" href="assets/css/hover-reveal.css">
->>>>>>> f94812d890869a24242904eb7a516ac90d29ec65
-</head>
-<body>
+    <!-- File utama styling login -->
+    <link rel="stylesheet" href="assets/css/login.css" />
+
+    <!-- File lain jika ada efek tambahan -->
+    <link rel="stylesheet" href="assets/css/hover-reveal.css" />
+  </head>
+  <body>
     <div class="container">
-        <div class="logo"></div>
-        <h2>Sign in</h2>
-        <div class="input-group">
-            <label for="email">Email or mobile phone number</label>
-            <input type="text" id="email" name="email">
-        </div>
-        <div class="input-group password-toggle">
-            <label for="password">Your password</label>
-            <input type="password" id="password" name="password">
-            <span class="toggle" onclick="togglePassword()"><i class="fas fa-eye-slash"></i> Hide</span>
-        </div>
-        <button class="btn">Log in</button>
-        <p class="terms">By continuing, you agree to the <a href="#">Terms of use</a> and <a href="#">Privacy Policy</a>.</p>
-        <div class="links">
-            <a href="#">Other issue with sign in</a>
-            <a href="#">Forget your password</a>
-        </div>
-        <div class="divider">New to our community</div>
-        <button class="create-account">Create an account</button>
-        <div class="footer">
-            <a href="#">Help Center</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">@2022yanliudesign</a>
-        </div>
+      <div class="logo"></div>
+      <h2>Sign in</h2>
+      <div class="input-group">
+        <label for="email">Email or mobile phone number</label>
+        <input type="text" id="email" name="email" />
+      </div>
+      <div class="input-group password-toggle">
+        <label for="password">Your password</label>
+        <input type="password" id="password" name="password" />
+        <span class="toggle" onclick="togglePassword()"
+          ><i class="fas fa-eye-slash"></i> Hide</span
+        >
+      </div>
+      <button class="btn">Log in</button>
+      <p class="terms">
+        By continuing, you agree to the <a href="#">Terms of use</a> and
+        <a href="#">Privacy Policy</a>.
+      </p>
+      <div class="links">
+        <a href="#">Other issue with sign in</a>
+        <a href="#">Forget your password</a>
+      </div>
+      <div class="divider">New to our community</div>
+      <a href="signup.html">
+        <button class="create-account" href="signup.html">
+          Create an account
+        </button></a
+      >
+
+      <div class="footer">
+        <a href="#">Help Center</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">@2022yanliudesign</a>
+      </div>
     </div>
 
     <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.querySelector('.toggle i');
-            const toggleText = document.querySelector('.toggle');
+      function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const toggleIcon = document.querySelector(".toggle i");
+        const toggleText = document.querySelector(".toggle");
 
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-                toggleText.innerHTML = '<i class="fas fa-eye"></i> Show';
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-                toggleText.innerHTML = '<i class="fas fa-eye-slash"></i> Hide';
-            }
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          toggleIcon.classList.remove("fa-eye-slash");
+          toggleIcon.classList.add("fa-eye");
+          toggleText.innerHTML = '<i class="fas fa-eye"></i> Show';
+        } else {
+          passwordInput.type = "password";
+          toggleIcon.classList.remove("fa-eye");
+          toggleIcon.classList.add("fa-eye-slash");
+          toggleText.innerHTML = '<i class="fas fa-eye-slash"></i> Hide';
         }
+      }
     </script>
-</body>
+  </body>
 </html>
