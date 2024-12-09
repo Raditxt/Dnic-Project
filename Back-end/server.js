@@ -1,6 +1,9 @@
 const sequelize = require('./config/database'); // Import konfigurasi database
 const sequelize = require('./utils/database');
+const authRoutes = require("./routes/authRoutes");
 
+
+app.use("/api/auth", authRoutes);
 
 // Tes koneksi ke database
 sequelize.authenticate()
