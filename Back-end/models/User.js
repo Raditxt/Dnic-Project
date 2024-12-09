@@ -18,11 +18,14 @@ const User = sequelize.define("User", {
   },
   password: {
     type: DataTypes.STRING,
+    allowNull: true,
   },
   provider: {
     type: DataTypes.STRING,
-    defaultValue: "local",
+    defaultValue: "local", // Bisa "local" atau "google"
   },
+}, {
+  tableName: 'users', // Pastikan nama tabel sesuai dengan yang Anda inginkan
 });
 
 module.exports = User;
