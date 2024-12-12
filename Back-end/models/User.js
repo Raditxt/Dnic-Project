@@ -12,7 +12,7 @@ const User = sequelize.define('User', {
         allowNull: false,
         unique: true,
         validate: {
-            isEmail: true,
+            isEmail: true,  // Validasi email
         },
     },
     phone_number: {
@@ -20,9 +20,10 @@ const User = sequelize.define('User', {
         allowNull: false,
         unique: true,
         validate: {
-            isNumeric: true,
+          is: /^[0-9]+$/, // Hanya menerima angka
+          len: [10, 15],   // Panjang nomor telepon antara 10 dan 15 digit
         },
-    },
+      },
     password: {
         type: DataTypes.STRING,
         allowNull: false,
