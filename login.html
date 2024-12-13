@@ -3,8 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
     <title>Masuk - Dnic Project</title>
     <link
       rel="stylesheet"
@@ -17,40 +23,49 @@
       type="image/x-icon"
       href="assets/1 LOGO DNIC PROJECT/logo profil/DNIC PROJECT kuning.png"
     />
-
   </head>
   <body>
     <div class="container">
       <h1>Login</h1>
       <p>Login to access your travelwise account</p>
       <form>
-          <div class="form-group">
-              <label for="email">Email</label>
-              <input type="email" class="form-control" id="email" value="john.doe@gmail.com">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            value="john.doe@gmail.com"
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-container">
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              value="password"
+            />
+            <i class="fas fa-eye-slash" id="togglePassword"></i>
           </div>
-          <div class="form-group">
-              <label for="password">Password</label>
-              <div class="input-container">
-                  <input type="password" class="form-control" id="password" value="password">
-                  <i class="fas fa-eye-slash" id="togglePassword"></i>
-              </div>
+        </div>
+        <div class="remember-forgot">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="rememberMe" />
+            <label class="form-check-label" for="rememberMe">Remember me</label>
           </div>
-          <div class="remember-forgot">
-              <div class="form-check">
-                  <input type="checkbox" class="form-check-input" id="rememberMe">
-                  <label class="form-check-label" for="rememberMe">Remember me</label>
-              </div>
-              <a href="#">Forgot Password</a>
-          </div>
-          <button type="submit" class="btn btn-primary btn-block">Login</button>
+          <a href="#">Forgot Password</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
       </form>
       <div class="signup">
-          <p>Don’t have an account? <a href="#">Sign up</a></p>
+        <p>Don’t have an account? <a href="#">Sign up</a></p>
       </div>
-  </div>
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="assets/js/login.js"></script>
   </body>
 </html>

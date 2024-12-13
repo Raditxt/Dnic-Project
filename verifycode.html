@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Code</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="assets/css/verifycode.css">
+  </head>
+  <body>
+    <div class="container">
+      <a href="login.html" class="back-link"
+        ><i class="fas fa-arrow-left"></i> Back to login</a
+      >
+      <h1>Verify code</h1>
+      <p>An authentication code has been sent to your email.</p>
+      <div class="input-container">
+        <label for="code">Enter Code</label>
+        <input type="password" id="code" value="7789BM6X" />
+        <i class="fas fa-eye" id="togglePassword"></i>
+      </div>
+      <p>Didn’t receive a code? <a href="#" class="resend-link">Resend</a></p>
+      <button class="verify-button">Verify</button>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="assets/js/verifycode.js"></script>
+  </body>
+</html>
