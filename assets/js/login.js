@@ -1,26 +1,11 @@
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
+const togglePassword = document.querySelector('#togglePassword');
+const password = document.querySelector('#password');
 
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  try {
-    const response = await fetch('http://localhost:3000/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-    if (response.ok) {
-      alert('Login successful!');
-      console.log(data.token);
-      localStorage.setItem('authToken', data.token);
-    } else {
-      alert(data.message || 'Login failed.');
-    }
-  } catch (error) {
-    console.error('Error during Login:', error);
-    alert('An error occurred. Please try again later.');
-  }
+togglePassword.addEventListener('click', function (e) {
+    // toggle the type attribute
+    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+    password.setAttribute('type', type);
+    // toggle the eye slash icon
+    this.classList.toggle('fa-eye');
+    this.classList.toggle('fa-eye-slash');
 });

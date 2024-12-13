@@ -1,128 +1,73 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #fff;
+    font-family: 'Arial', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    background-color: #f9f9f9;
 }
 .container {
-    text-align: center;
-    width: 100%;
-    max-width: 450px;
     background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    padding: 30px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.logo {
-    width: 50px;
-    height: 50px;
-    background-color: #ccc;
-    border-radius: 50%;
-    margin: 0 auto 20px;
-}
-h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-.input-group {
-    margin-bottom: 20px;
-    text-align: left;
-}
-.input-group label {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 5px;
-}
-.input-group input {
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
-    padding: 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
+    max-width: 500px;
+}
+h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 30px;
+}
+.form-group label {
     font-size: 14px;
 }
-.input-group .password-toggle {
+.form-control {
+    font-size: 16px;
+}
+.input-container {
     position: relative;
 }
-.input-group .password-toggle input {
-    padding-right: 40px;
-}
-.input-group .password-toggle .toggle {
+.input-container i {
     position: absolute;
-    top: 50%;
     right: 10px;
+    top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
 }
-.btn {
-    width: 100%;
-    padding: 12px;
-    background-color: #ccc;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    color: #fff;
-    cursor: pointer;
-}
-.terms {
-    font-size: 12px;
-    color: #888;
-    margin-top: 10px;
-}
-.terms a {
-    color: #888;
-    text-decoration: none;
-}
-.links {
+.remember-forgot {
     display: flex;
     justify-content: space-between;
-    font-size: 12px;
-    margin-top: 10px;
+    align-items: center;
+    margin-bottom: 20px;
 }
-.links a {
-    color: #888;
+.remember-forgot a {
+    color: #f28b82;
     text-decoration: none;
 }
-.divider {
-    display: flex;
-    align-items: center;
-    margin: 30px 0;
+.remember-forgot a:hover {
+    text-decoration: underline;
 }
-.divider::before,
-.divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background-color: #e0e0e0;
+.btn-primary {
+    background-color: #4a56e2;
+    border: none;
 }
-.divider::before {
-    margin-right: 10px;
+.btn-primary:hover {
+    background-color: #3a46c2;
 }
-.divider::after {
-    margin-left: 10px;
-}
-.create-account {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #000;
-    border-radius: 5px;
-    font-size: 16px;
-    color: #000;
-    background-color: #fff;
-    cursor: pointer;
-}
-.footer {
-    display: flex;
-    justify-content: center;
-    font-size: 12px;
-    color: #888;
+.signup {
+    text-align: center;
     margin-top: 20px;
 }
-.footer a {
-    color: #888;
+.signup a {
+    color: #f28b82;
     text-decoration: none;
-    margin: 0 5px;
+}
+.signup a:hover {
+    text-decoration: underline;
 }

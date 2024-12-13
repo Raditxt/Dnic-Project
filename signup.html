@@ -3,46 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create an Account</title>
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="assets/css/signup.css">
 </head>
 <body>
-    <div class="header">
-
-
-    </div>
     <div class="container">
-
-        <h1>Create an account</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lobortis maximus</p>
+        <h1>Sign up</h1>
+        <p>Let’s get you all set up so you can access your personal account.</p>
         <form>
-            <label for="email">Email</label>
-            <div class="tooltip">
-                <input type="text" id="email" name="email">
-                <span class="tooltiptext">We will use your email as your user ID.</span>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="firstName">First Name</label>
+                    <input type="text" class="form-control" id="firstName" placeholder="First Name" value="john.doe@gmail.com">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" placeholder="Last Name" value="john.doe@gmail.com">
+                </div>
             </div>
-            <label for="phone">Phone</label>
-            <input type="text" id="phone" name="phone">
-            <p>We strongly recommend adding a phone number. This will help verify your account and keep it safe.</p>
-            <label for="password">Password</label>
-            <div class="password-toggle">
-                <input type="password" id="password" name="password">
-                <span class="toggle"><i class="fas fa-eye" id="togglePassword"></i></span>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Email" value="john.doe@gmail.com">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="text" class="form-control" id="phoneNumber" placeholder="Phone Number" value="john.doe@gmail.com">
+                </div>
             </div>
-            <div class="password-requirements">
-                <span>● Use 8 or more characters</span>
-                <span>● Use upper and lower case letters (e.g. Aa)</span>
-                <span>● Use a number (e.g. 1234)</span>
-                <span>● Use a symbol (e.g. !@#$)</span>
+            <div class="form-group input-container">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Password" value="••••••••••••••••••••">
+                <i class="fas fa-eye" onclick="togglePassword('password')"></i>
             </div>
-            <button type="submit">Sign in</button>
+            <div class="form-group input-container">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" value="••••••••••••••••••••">
+                <i class="fas fa-eye" onclick="togglePassword('confirmPassword')"></i>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="terms">
+                <label class="form-check-label" for="terms">I agree to all the <a href="#">Terms</a> and <a href="#">Privacy Policies</a></label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Create account</button>
+            <div class="login-link">
+                <p>Already have an account? <a href="#">Login</a></p>
+            </div>
         </form>
-        <div class="terms">
-            <span>Already have an account? <a href="#">Log in</a></span><br>
-        </div>
-
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script src="assets/js/signup.js"></script>
 </body>
