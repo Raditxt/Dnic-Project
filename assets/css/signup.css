@@ -8,7 +8,7 @@ body {
   margin: 0;
 }
 .container {
-  background-color: #fff;
+  background-color: #f9ec11;
   padding: 40px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -54,7 +54,7 @@ p {
   text-decoration: none;
 }
 .btn-primary {
-  background-color: #4a00e0;
+  background-color: #282828;
   border: none;
 }
 .login-link {
@@ -62,6 +62,6 @@ p {
   margin-top: 20px;
 }
 .login-link a {
-  color: #ff6b6b;
+  color: #006eff;
   text-decoration: none;
 }

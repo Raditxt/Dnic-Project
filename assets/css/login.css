@@ -8,7 +8,7 @@ body {
     background-color: #f9f9f9;
 }
 .container {
-    background-color: #fff;
+    background-color: #f9ec11;
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -47,14 +47,14 @@ p {
     margin-bottom: 20px;
 }
 .remember-forgot a {
-    color: #f28b82;
+    color: #006eff;
     text-decoration: none;
 }
 .remember-forgot a:hover {
     text-decoration: underline;
 }
 .btn-primary {
-    background-color: #4a56e2;
+    background-color: #282828;
     border: none;
 }
 .btn-primary:hover {
@@ -65,7 +65,7 @@ p {
     margin-top: 20px;
 }
 .signup a {
-    color: #f28b82;
+    color: #006eff;
     text-decoration: none;
 }
 .signup a:hover {
