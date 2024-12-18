@@ -12,12 +12,7 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
     <title>Masuk - Dnic Project</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    />
     <link rel="stylesheet" href="assets/css/login.css" />
-
     <link
       rel="shortcut icon"
       type="image/x-icon"
@@ -27,15 +22,15 @@
   <body>
     <div class="container">
       <h1>Login</h1>
-      <p>Login to access your travelwise account</p>
-      <form>
+      <p>Login to access your Dnic Project account</p>
+      <form id="loginForm">
         <div class="form-group">
           <label for="email">Email</label>
           <input
             type="email"
             class="form-control"
             id="email"
-            value="john.doe@gmail.com"
+            placeholder="Enter your email"
           />
         </div>
         <div class="form-group">
@@ -45,7 +40,7 @@
               type="password"
               class="form-control"
               id="password"
-              value="password"
+              placeholder="Enter your password"
             />
             <i class="fas fa-eye-slash" id="togglePassword"></i>
           </div>

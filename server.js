@@ -1,25 +1,26 @@
 const express = require('express');
-const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
 const sequelize = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
-
-dotenv.config();
+const cors = require('cors');
 
 const app = express();
-const port = process.env.PORT || 3000;
 
-// Middleware untuk parsing request body
-app.use(express.json());
+// Middleware
+const corsOptions = {
+  origin: 'http://127.0.0.1:5500', // URL Live Server
+  methods: 'GET,POST,PUT,DELETE', // Metode yang diizinkan
+};
+app.use(cors(corsOptions));
+app.use(bodyParser.json());
 
-// Routing
-app.use('/auth', authRoutes);
+// Routes
+app.use('/api/auth', authRoutes);
 
-// Start server dan sync database
-sequelize.sync()
-  .then(() => {
-    console.log("Database connected...");
-    app.listen(port, () => {
-      console.log(`Server running on port ${port}`);
-    });
-  })
-  .catch((err) => console.log('Error syncing database:', err));
+// Database Sync
+sequelize.sync().then(() => {
+  console.log('Database connected and tables created');
+});
+
+const PORT = 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -1,58 +1,61 @@
-// Fitur toggle password
-const togglePassword = document.querySelector('#togglePassword');
-const password = document.querySelector('#password');
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('loginForm');
 
-togglePassword.addEventListener('click', function (e) {
-  // Toggle the type attribute of password input
-  const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-  password.setAttribute('type', type);
-  // Toggle the eye slash icon
-  this.classList.toggle('fa-eye');
-  this.classList.toggle('fa-eye-slash');
-});
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-// Ambil elemen-elemen input dan tombol
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const loginButton = document.querySelector("button[type='submit']");
+    // Ambil nilai input form
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
 
-// Fungsi untuk menangani login
-async function handleLogin(event) {
-  event.preventDefault(); // Menghentikan form dari reload otomatis
+    // Validasi input kosong
+    if (!email || !password) {
+      alert('Please fill in both email and password.');
+      return;
+    }
 
-  // Ambil nilai input
-  const email = emailInput.value;
-  const password = passwordInput.value;
+    try {
+      // Kirim data ke server menggunakan fetch API
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-  // Kirim data login ke server menggunakan Fetch API
-  try {
-    const response = await fetch("http://localhost:5000/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    // Cek jika login berhasil
-    if (response.ok) {
       const data = await response.json();
 
-      // Simpan token JWT ke localStorage
-      localStorage.setItem("authToken", data.token);
+      if (response.ok) {
+        console.log('Login successful!');
 
-      // Redirect ke halaman dashboard atau halaman utama setelah login
-      window.location.href = "/dashboard.html";
-    } else {
-      // Jika login gagal, tampilkan pesan error
-      const errorData = await response.json();
-      alert(errorData.message || "Login failed. Please try again.");
+        // Simpan token (jika ada) ke localStorage atau sessionStorage
+        if (data.token) {
+          localStorage.setItem('authToken', data.token); // Simpan token JWT
+        }
+
+        alert('Login successful! Redirecting to the main page.');
+
+        // Redirect ke halaman utama
+        setTimeout(() => {
+          window.location.href = './index.html'; // Halaman utama
+        }, 1500); // Waktu tunggu 1.5 detik agar pengguna dapat melihat pesan sukses
+      } else {
+        // Jika login gagal
+        alert(data.message || 'Invalid email or password. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to connect to the server. Please try again later.');
     }
-  } catch (error) {
-    console.error("Error during login:", error);
-    alert("An error occurred. Please try again.");
-  }
-}
+  });
 
-// Pasang event listener untuk tombol login
-loginButton.addEventListener("click", handleLogin);
+  // Fitur toggle password visibility
+  const togglePassword = document.getElementById('togglePassword');
+  const passwordInput = document.getElementById('password');
+
+  togglePassword.addEventListener('click', () => {
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    togglePassword.classList.toggle('fa-eye');
+    togglePassword.classList.toggle('fa-eye-slash');
+  });
+});

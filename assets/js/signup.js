@@ -1,77 +1,90 @@
-// Fitur toggle password
-function togglePassword(id) {
-  const input = document.getElementById(id);
-  const icon = input.nextElementSibling;
-  if (input.type === "password") {
-      input.type = "text";
-      icon.classList.remove("fa-eye");
-      icon.classList.add("fa-eye-slash");
-  } else {
-      input.type = "password";
-      icon.classList.remove("fa-eye-slash");
-      icon.classList.add("fa-eye");
-  }
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.querySelector('form');
+  const termsCheckbox = document.getElementById('terms');
 
-// Ambil elemen-elemen input dan tombol
-const firstNameInput = document.getElementById("firstName");
-const lastNameInput = document.getElementById("lastName");
-const emailInput = document.getElementById("email");
-const phoneNumberInput = document.getElementById("phoneNumber");
-const passwordInput = document.getElementById("password");
-const confirmPasswordInput = document.getElementById("confirmPassword");
-const termsCheckbox = document.getElementById("terms");
-const signupButton = document.querySelector("button[type='submit']");
-
-// Fungsi untuk menangani pendaftaran
-async function handleSignup(event) {
-  event.preventDefault(); // Menghentikan form dari reload otomatis
-
-  // Ambil nilai input
-  const firstName = firstNameInput.value;
-  const lastName = lastNameInput.value;
-  const email = emailInput.value;
-  const phoneNumber = phoneNumberInput.value;
-  const password = passwordInput.value;
-  const confirmPassword = confirmPasswordInput.value;
-
-  // Validasi password dan konfirmasi password
-  if (password !== confirmPassword) {
-    alert("Passwords do not match!");
-    return;
-  }
-
-  // Validasi checkbox persetujuan Terms
-  if (!termsCheckbox.checked) {
-    alert("You must agree to the terms and privacy policies.");
-    return;
-  }
-
-  // Kirim data pendaftaran ke server menggunakan Fetch API
-  try {
-    const response = await fetch("http://localhost:5000/api/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ firstName, lastName, email, phoneNumber, password }),
-    });
-
-    // Cek jika pendaftaran berhasil
-    if (response.ok) {
-      const data = await response.json();
-      alert("Account created successfully!");
-      window.location.href = "/login.html"; // Redirect ke halaman login setelah pendaftaran
+  // Toggle visibility for password fields
+  const togglePassword = (id) => {
+    const input = document.getElementById(id);
+    const icon = input.nextElementSibling;
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
     } else {
-      // Jika gagal, tampilkan pesan error
-      const errorData = await response.json();
-      alert(errorData.message || "Sign up failed. Please try again.");
+      input.type = 'password';
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
     }
-  } catch (error) {
-    console.error("Error during sign up:", error);
-    alert("An error occurred. Please try again.");
-  }
-}
+  };
 
-// Pasang event listener untuk tombol signup
-signupButton.addEventListener("click", handleSignup);
+  // Add click event listener to eye icons
+  document.querySelectorAll('.fa-eye').forEach((icon) => {
+    icon.addEventListener('click', () => togglePassword(icon.previousElementSibling.id));
+  });
+
+  // Form submission handler
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Grab input values
+    const first_name = document.getElementById('firstName').value.trim();
+    const last_name = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone_number = document.getElementById('phoneNumber').value.trim();
+    const password = document.getElementById('password').value;
+    const confirm_password = document.getElementById('confirmPassword').value;
+
+    // Basic validation
+    if (
+      !first_name ||
+      !last_name ||
+      !email ||
+      !phone_number ||
+      !password ||
+      !confirm_password
+    ) {
+      alert('Please fill in all fields.');
+      return;
+    }
+
+    if (!termsCheckbox.checked) {
+      alert('You must agree to the Terms and Privacy Policies.');
+      return;
+    }
+
+    if (password !== confirm_password) {
+      alert('Passwords do not match.');
+      return;
+    }
+
+    try {
+      // Send data to server
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name,
+          last_name,
+          email,
+          phone_number,
+          password,
+          confirm_password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Account created successfully! Redirecting to login page...');
+        setTimeout(() => {
+          window.location.href = './login.html';
+        }, 1500);
+      } else {
+        alert(data.message || 'Registration failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to connect to the server. Please try again later.');
+    }
+  });
+});
