@@ -1,32 +1,30 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const PasswordReset = require('../models/PasswordReset'); // Tambahkan model untuk tabel reset token
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 exports.register = async (req, res) => {
   const { first_name, last_name, email, phone_number, password, confirm_password } = req.body;
 
-  // Validasi apakah password dan confirm_password cocok
   if (password !== confirm_password) {
     return res.status(400).json({ message: "Passwords do not match" });
   }
 
   try {
-    // Cek duplikat email
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ message: "Email already in use" });
     }
 
-    // Cek duplikat nomor telepon
     const existingPhone = await User.findOne({ where: { phone_number } });
     if (existingPhone) {
       return res.status(400).json({ message: "Phone number already in use" });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Simpan user
     await User.create({
       first_name,
       last_name,
@@ -61,5 +59,51 @@ exports.login = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "Email is required" });
+  }
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // Berlaku 15 menit
+
+    await PasswordReset.create({
+      email,
+      token: resetToken,
+      expiresAt,
+    });
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL, // Pastikan EMAIL diatur di .env
+        pass: process.env.EMAIL_PASSWORD, // Pastikan EMAIL_PASSWORD diatur di .env
+      },
+    });
+
+    const resetUrl = `${req.protocol}://${req.get('host')}/reset-password?token=${resetToken}`;
+    const message = `Click the link below to reset your password:\n\n${resetUrl}\n\nThis link will expire in 15 minutes.`;
+
+    await transporter.sendMail({
+      to: email,
+      subject: 'Password Reset Request',
+      text: message,
+    });
+
+    res.status(200).json({ message: "Password reset email sent" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "An error occurred. Please try again." });
   }
 };
