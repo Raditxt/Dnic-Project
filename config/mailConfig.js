@@ -23,17 +23,16 @@ async function sendMail(to, subject, text) {
                 refreshToken: REFRESH_TOKEN,
                 accessToken: accessToken.token,
             },
-            // Gunakan port 587 untuk TLS
             port: 587,
-            secure: false, // Ganti menjadi true jika menggunakan port 465
-            debug: true // Aktifkan debug
+            secure: false,
+            debug: false // Matikan debug di produksi
         });
 
         const mailOptions = {
-            from: `Your App Name <${process.env.EMAIL}>`,
+            from: `DNIC Project <${process.env.EMAIL}>`,
             to,
             subject,
-            text,
+            text, // Pesan email dalam format teks
         };
 
         const result = await transporter.sendMail(mailOptions);
