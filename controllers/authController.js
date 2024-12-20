@@ -5,6 +5,7 @@ const PasswordReset = require('../models/PasswordReset');
 const crypto = require('crypto');
 const sendMail = require('../config/mailConfig'); // Mengimpor fungsi pengiriman email
 
+// Registrasi pengguna baru
 exports.register = async (req, res) => {
   const { first_name, last_name, email, phone_number, password, confirm_password } = req.body;
 
@@ -40,6 +41,7 @@ exports.register = async (req, res) => {
   }
 };
 
+// Login pengguna
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -62,6 +64,7 @@ exports.login = async (req, res) => {
   }
 };
 
+// Lupa password: kirim email reset password
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
 
@@ -78,24 +81,62 @@ exports.forgotPassword = async (req, res) => {
     const resetToken = crypto.randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // Berlaku 15 menit
 
+    // Simpan token ke database
     await PasswordReset.create({
       email,
       token: resetToken,
       expiresAt,
     });
 
+    // Buat URL reset
     const resetUrl = `${req.protocol}://${req.get('host')}/reset-password?token=${resetToken}`;
     const message = `Click the link below to reset your password:\n\n${resetUrl}\n\nThis link will expire in 15 minutes.`;
 
-    // Gunakan fungsi sendMail dari mailConfig.js
+    // Kirim email
     await sendMail(email, 'Password Reset Request', message);
 
-    console.log("Email sent successfully");
     res.status(200).json({ message: "Password reset email sent" });
   } catch (error) {
     console.error("Error occurred in forgotPassword:", error.message);
     if (!res.headersSent) {
       res.status(500).json({ message: "An error occurred. Please try again." });
     }
+  }
+};
+
+// Reset password dengan token
+exports.resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return res.status(400).json({ message: "Token and new password are required" });
+  }
+
+  try {
+    const resetEntry = await PasswordReset.findOne({ where: { token } });
+
+    if (!resetEntry) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    if (resetEntry.expiresAt < new Date()) {
+      return res.status(400).json({ message: "Token has expired" });
+    }
+
+    const user = await User.findOne({ where: { email: resetEntry.email } });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await user.update({ password: hashedPassword });
+
+    // Hapus token setelah digunakan
+    await PasswordReset.destroy({ where: { token } });
+
+    res.status(200).json({ message: "Password has been reset successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "An error occurred. Please try again." });
   }
 };

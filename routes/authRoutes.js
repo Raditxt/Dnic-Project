@@ -1,9 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, forgotPassword } = require('../controllers/authController'); // Import fungsi forgotPassword
+const { register, login, forgotPassword, resetPassword } = require('../controllers/authController'); // Import fungsi resetPassword
 
+// Endpoint untuk registrasi pengguna baru
 router.post('/register', register);
+
+// Endpoint untuk login pengguna
 router.post('/login', login);
-router.post('/forgot-password', forgotPassword); // Tambahkan route baru untuk forgot password
+
+// Endpoint untuk permintaan lupa password
+router.post('/forgot-password', forgotPassword);
+
+// Endpoint untuk reset password
+router.post('/reset-password', resetPassword); // Route untuk proses reset password
 
 module.exports = router;

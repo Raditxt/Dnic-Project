@@ -19,16 +19,25 @@
       <a href="login.html" class="back-link"
         ><i class="fas fa-arrow-left"></i> Back to login</a
       >
-      <h1>Verify code</h1>
+      <h1>Verify Code</h1>
       <p>An authentication code has been sent to your email.</p>
-      <div class="input-container">
-        <label for="code">Enter Code</label>
-        <input type="password" id="code" value="7789BM6X" />
-        <i class="fas fa-eye" id="togglePassword"></i>
-      </div>
-      <p>Didn’t receive a code? <a href="#" class="resend-link">Resend</a></p>
-      <button class="verify-button">Verify</button>
+      <form id="verifyCodeForm">
+        <div class="form-group">
+          <label for="code">Enter Code</label>
+          <input
+            type="text"
+            id="code"
+            class="form-control"
+            placeholder="Enter your code"
+            required
+          />
+        </div>
+        <p>Didn’t receive a code? <a href="#" id="resendCode">Resend</a></p>
+        <button type="submit" class="btn btn-primary">Verify</button>
+      </form>
+      <div id="feedback" class="mt-3" style="display: none;"></div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

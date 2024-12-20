@@ -1,35 +1,35 @@
-document.querySelector(".btn").addEventListener("click", async () => {
-  const email = document.getElementById("email").value;
-  const feedbackMessage = document.createElement("p");
+document.getElementById("forgotPasswordForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  // Validasi input email
-  if (!email) {
-    feedbackMessage.textContent = "Please enter a valid email address.";
-    feedbackMessage.style.color = "red";
-    document.querySelector(".container").appendChild(feedbackMessage);
-    return;
-  }
+  const email = document.getElementById("email").value.trim();
+  const feedback = document.getElementById("feedback");
 
   try {
-    const response = await fetch("/auth/forgot-password", {
+    const response = await fetch("/api/auth/forgot-password", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ email }),
     });
 
     const result = await response.json();
-    feedbackMessage.textContent = result.message;
 
     if (response.ok) {
-      feedbackMessage.style.color = "green";
+      feedback.style.display = "block";
+      feedback.className = "alert alert-success";
+      feedback.textContent = result.message || "A verification code has been sent to your email.";
+      setTimeout(() => {
+        window.location.href = "/verify-code.html"; // Redirect ke halaman verifikasi kode
+      }, 2000);
     } else {
-      feedbackMessage.style.color = "red";
+      feedback.style.display = "block";
+      feedback.className = "alert alert-danger";
+      feedback.textContent = result.message || "Error occurred. Please try again.";
     }
-
-    document.querySelector(".container").appendChild(feedbackMessage);
-  } catch (error) {
-    feedbackMessage.textContent = "An error occurred. Please try again.";
-    feedbackMessage.style.color = "red";
-    document.querySelector(".container").appendChild(feedbackMessage);
+  } catch (err) {
+    feedback.style.display = "block";
+    feedback.className = "alert alert-danger";
+    feedback.textContent = "Network error. Please try again later.";
   }
 });
