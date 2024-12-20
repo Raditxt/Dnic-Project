@@ -1,9 +1,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const PasswordReset = require('../models/PasswordReset'); // Tambahkan model untuk tabel reset token
+const PasswordReset = require('../models/PasswordReset');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const sendMail = require('../config/mailConfig'); // Mengimpor fungsi pengiriman email
 
 exports.register = async (req, res) => {
   const { first_name, last_name, email, phone_number, password, confirm_password } = req.body;
@@ -84,26 +84,18 @@ exports.forgotPassword = async (req, res) => {
       expiresAt,
     });
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL, // Pastikan EMAIL diatur di .env
-        pass: process.env.EMAIL_PASSWORD, // Pastikan EMAIL_PASSWORD diatur di .env
-      },
-    });
-
     const resetUrl = `${req.protocol}://${req.get('host')}/reset-password?token=${resetToken}`;
     const message = `Click the link below to reset your password:\n\n${resetUrl}\n\nThis link will expire in 15 minutes.`;
 
-    await transporter.sendMail({
-      to: email,
-      subject: 'Password Reset Request',
-      text: message,
-    });
+    // Gunakan fungsi sendMail dari mailConfig.js
+    await sendMail(email, 'Password Reset Request', message);
 
+    console.log("Email sent successfully");
     res.status(200).json({ message: "Password reset email sent" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "An error occurred. Please try again." });
+    console.error("Error occurred in forgotPassword:", error.message);
+    if (!res.headersSent) {
+      res.status(500).json({ message: "An error occurred. Please try again." });
+    }
   }
 };
