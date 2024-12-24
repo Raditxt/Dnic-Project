@@ -3,11 +3,10 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const PasswordReset = require("../models/PasswordReset");
 const crypto = require("crypto");
-const sendMail = require("../config/mailConfig"); // Mengimpor fungsi pengiriman email
+const sendMail = require("../config/mailConfig"); // Fungsi pengiriman email
 const rateLimit = require("express-rate-limit");
 const winston = require("winston");
-const { Op } = require('sequelize');
-
+const { Op } = require("sequelize");
 
 // Konfigurasi Winston untuk logging
 const logger = winston.createLogger({
@@ -20,26 +19,22 @@ const logger = winston.createLogger({
 
 // Registrasi pengguna baru
 exports.register = async (req, res) => {
-  const {
-    first_name,
-    last_name,
-    email,
-    phone_number,
-    password,
-    confirm_password,
-  } = req.body;
+  const { first_name, last_name, email, phone_number, password, confirm_password } = req.body;
 
   if (password !== confirm_password) {
     return res.status(400).json({ message: "Passwords do not match" });
   }
 
   try {
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
+    const [existingEmail, existingPhone] = await Promise.all([
+      User.findOne({ where: { email } }),
+      User.findOne({ where: { phone_number } }),
+    ]);
+
+    if (existingEmail) {
       return res.status(400).json({ message: "Email already in use" });
     }
 
-    const existingPhone = await User.findOne({ where: { phone_number } });
     if (existingPhone) {
       return res.status(400).json({ message: "Phone number already in use" });
     }
@@ -56,7 +51,7 @@ exports.register = async (req, res) => {
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    console.error(err);
+    logger.error(`Error in register: ${err.message}`);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -76,158 +71,121 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: user.id }, "secretKey", { expiresIn: "1h" });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
     res.status(200).json({ message: "Login successful", token });
   } catch (err) {
-    console.error(err);
+    logger.error(`Error in login: ${err.message}`);
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
-/// Lupa password: kirim email reset password
+// Lupa password: kirim email reset password
 exports.forgotPassword = async (req, res) => {
-    const { email } = req.body;
-  
-    try {
-      // Cari pengguna berdasarkan email
-      const user = await User.findOne({ where: { email } });
-      if (!user) {
-        return res.status(404).json({ message: "Email tidak ditemukan" });
-      }
-  
-      // Generate token untuk reset password
-      const resetToken = crypto.randomBytes(32).toString("hex");
-      const hashedToken = crypto
-        .createHash("sha256")
-        .update(resetToken)
-        .digest("hex");
-  
-      // Simpan token dan waktu kedaluwarsa ke database
-      user.resetPasswordToken = hashedToken;
-      user.resetPasswordExpires = Date.now() + 10 * 60 * 1000; // Token berlaku 10 menit
-      await user.save();
-  
-      // Buat pesan email
-      const emailSubject = "Reset Password DNIC Project";
-      const emailText = `
-  Anda telah meminta untuk mereset password Anda.
-  Berikut adalah token reset password Anda:
-  ${resetToken}
-  
-  Token ini berlaku selama 10 menit. Jika Anda tidak meminta reset password, abaikan email ini.
-  `;
-  
-      // Kirim email
-      await sendMail(user.email, emailSubject, emailText);
-  
-      // Respon sukses
-      res
-        .status(200)
-        .json({ message: "Token reset password telah dikirim ke email Anda" });
-    } catch (error) {
-      console.error("Error in forgotPassword:", error);
-      res.status(500).json({ message: "Terjadi kesalahan pada server" });
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ message: "Email tidak ditemukan" });
     }
-  };
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+    await PasswordReset.create({
+      email,
+      token: hashedToken,
+      expiresAt: Date.now() + 10 * 60 * 1000, // 10 menit
+    });
+
+    const emailSubject = "Reset Password DNIC Project";
+    const emailText = `Reset password token: ${resetToken}. Berlaku 10 menit.`;
+
+    await sendMail(email, emailSubject, emailText);
+
+    res.status(200).json({ message: "Token reset password telah dikirim ke email Anda" });
+  } catch (error) {
+    logger.error(`Error in forgotPassword: ${error.message}`);
+    res.status(500).json({ message: "Terjadi kesalahan pada server" });
+  }
+};
 
 // Verifikasi token reset password
 exports.verifyToken = async (req, res) => {
-    const { token } = req.body;
-  
-    try {
-      // Hash token yang diterima untuk mencocokkannya dengan yang disimpan di database
-      const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-  
-      // Cari pengguna berdasarkan token dan periksa apakah token masih valid
-      const user = await User.findOne({
-        where: {
-          resetPasswordToken: hashedToken,
-          resetPasswordExpires: { [Op.gt]: Date.now() }, // Token belum kedaluwarsa
-        },
-      });
-  
-      if (!user) {
-        return res.status(400).json({
-          message: "Token tidak valid atau telah kedaluwarsa.",
-        });
-      }
-  
-      res.status(200).json({
-        message: "Token valid. Anda dapat mengatur ulang password.",
-      });
-    } catch (error) {
-      console.error("Error in verifyToken:", error);
-      res.status(500).json({
-        message: "Terjadi kesalahan pada server.",
-      });
-    }
-};
-  
+  const { token } = req.body;
 
-// Reset password dengan token ("setpassword")
+  try {
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const resetEntry = await PasswordReset.findOne({
+      where: {
+        token: hashedToken,
+        expiresAt: { [Op.gt]: Date.now() },
+      },
+    });
+
+    if (!resetEntry) {
+      return res.status(400).json({ message: "Token tidak valid atau telah kedaluwarsa" });
+    }
+
+    res.status(200).json({ message: "Token valid" });
+  } catch (error) {
+    logger.error(`Error in verifyToken: ${error.message}`);
+    res.status(500).json({ message: "Terjadi kesalahan pada server" });
+  }
+};
+
+// Reset password dengan token (setPassword)
 exports.setPassword = async (req, res) => {
   const { token, newPassword } = req.body;
 
-  if (!token || !newPassword) {
-    return res
-      .status(400)
-      .json({ message: "Token and new password are required" });
-  }
-
-  // Validasi password baru agar memenuhi standar keamanan
-  const passwordRegex =
-    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   if (!passwordRegex.test(newPassword)) {
     return res.status(400).json({
-      message:
-        "Password must be at least 8 characters long and contain a mix of uppercase, lowercase, numbers, and special characters.",
+      message: "Password tidak memenuhi kriteria keamanan."
     });
   }
 
   try {
-    const resetEntry = await PasswordReset.findOne({ where: { token } });
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const resetEntry = await PasswordReset.findOne({
+      where: {
+        token: hashedToken,
+        expiresAt: { [Op.gt]: Date.now() },
+      },
+    });
 
     if (!resetEntry) {
-      return res.status(400).json({ message: "Invalid or expired token" });
-    }
-
-    if (resetEntry.expiresAt < new Date()) {
-      return res.status(400).json({ message: "Token has expired" });
+      return res.status(400).json({ message: "Token tidak valid atau telah kedaluwarsa" });
     }
 
     const user = await User.findOne({ where: { email: resetEntry.email } });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Pengguna tidak ditemukan" });
     }
 
-    // Hash password baru
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await user.update({ password: hashedPassword });
 
-    // Hapus token setelah digunakan
-    await PasswordReset.destroy({ where: { token } });
+    await PasswordReset.destroy({ where: { id: resetEntry.id } });
 
-    res.status(200).json({ message: "Password has been reset successfully" });
+    res.status(200).json({ message: "Password berhasil diatur ulang" });
   } catch (error) {
-    console.error(error);
     logger.error(`Error in setPassword: ${error.message}`);
-    res.status(500).json({ message: "An error occurred. Please try again." });
+    res.status(500).json({ message: "Terjadi kesalahan pada server" });
   }
 };
 
-// Rate Limiting untuk forgotPassword dan setPassword
-const forgotPasswordLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 menit
-  max: 5, // Maksimal 5 permintaan per IP dalam 15 menit
-  message: "Too many requests, please try again later.",
+// Rate Limiting
+exports.forgotPasswordLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: "Terlalu banyak permintaan, coba lagi nanti."
 });
 
-const setPasswordLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 menit
-  max: 5, // Maksimal 5 permintaan per IP dalam 15 menit
-  message: "Too many requests, please try again later.",
+exports.setPasswordLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: "Terlalu banyak permintaan, coba lagi nanti."
 });
-
-// Menambahkan rate limiting pada route
-exports.forgotPasswordLimiter = forgotPasswordLimiter;
-exports.setPasswordLimiter = setPasswordLimiter;

@@ -1,10 +1,9 @@
-// models/PasswordReset.js
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // Impor instance Sequelize
+const sequelize = require('../config/database');
 
 const PasswordReset = sequelize.define('PasswordReset', {
   email: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(100),
     allowNull: false,
   },
   token: {
@@ -15,6 +14,8 @@ const PasswordReset = sequelize.define('PasswordReset', {
     type: DataTypes.DATE,
     allowNull: false,
   },
+}, {
+  timestamps: true, // Untuk mencatat createdAt dan updatedAt
 });
 
 module.exports = PasswordReset;
