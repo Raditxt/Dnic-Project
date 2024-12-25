@@ -18,3 +18,4 @@ module.exports = {
     await queryInterface.removeColumn('Users', 'resetPasswordExpires');
   },
 };
+  
