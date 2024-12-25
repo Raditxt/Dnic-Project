@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, forgotPassword, verifyToken, setPassword, forgotPasswordLimiter, setPasswordLimiter } = require('../controllers/authController'); // Import fungsi resetPassword
+const { register, login, forgotPassword, verifyToken,  forgotPasswordLimiter, setNewPassword } = require('../controllers/authController'); // Import fungsi resetPassword
 
 // Endpoint untuk registrasi pengguna baru
 router.post('/register', register);
@@ -12,7 +12,8 @@ router.post('/forgot-password', forgotPasswordLimiter, forgotPassword);
 
 router.post('/verify-token', verifyToken);
 
-router.post('/setpassword', setPasswordLimiter, setPassword);
+router.post('/set-password', setNewPassword);
+
 
 
 module.exports = router;

@@ -19,7 +19,14 @@ const logger = winston.createLogger({
 
 // Registrasi pengguna baru
 exports.register = async (req, res) => {
-  const { first_name, last_name, email, phone_number, password, confirm_password } = req.body;
+  const {
+    first_name,
+    last_name,
+    email,
+    phone_number,
+    password,
+    confirm_password,
+  } = req.body;
 
   if (password !== confirm_password) {
     return res.status(400).json({ message: "Passwords do not match" });
@@ -71,7 +78,9 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
     res.status(200).json({ message: "Login successful", token });
   } catch (err) {
     logger.error(`Error in login: ${err.message}`);
@@ -90,7 +99,10 @@ exports.forgotPassword = async (req, res) => {
     }
 
     const resetToken = crypto.randomBytes(32).toString("hex");
-    const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
 
     await PasswordReset.create({
       email,
@@ -103,7 +115,9 @@ exports.forgotPassword = async (req, res) => {
 
     await sendMail(email, emailSubject, emailText);
 
-    res.status(200).json({ message: "Token reset password telah dikirim ke email Anda" });
+    res
+      .status(200)
+      .json({ message: "Token reset password telah dikirim ke email Anda" });
   } catch (error) {
     logger.error(`Error in forgotPassword: ${error.message}`);
     res.status(500).json({ message: "Terjadi kesalahan pada server" });
@@ -125,7 +139,9 @@ exports.verifyToken = async (req, res) => {
     });
 
     if (!resetEntry) {
-      return res.status(400).json({ message: "Token tidak valid atau telah kedaluwarsa" });
+      return res
+        .status(400)
+        .json({ message: "Token tidak valid atau telah kedaluwarsa" });
     }
 
     res.status(200).json({ message: "Token valid" });
@@ -135,20 +151,22 @@ exports.verifyToken = async (req, res) => {
   }
 };
 
-// Reset password dengan token (setPassword)
-exports.setPassword = async (req, res) => {
+// Ganti password dengan password baru
+exports.setNewPassword = async (req, res) => {
   const { token, newPassword } = req.body;
 
-  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  if (!passwordRegex.test(newPassword)) {
-    return res.status(400).json({
-      message: "Password tidak memenuhi kriteria keamanan."
-    });
-  }
-
   try {
+    // Validasi input
+    if (!token || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "Token dan password baru wajib diisi" });
+    }
+
+    // Hash token yang diterima
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
+    // Cari token reset di tabel PasswordResets
     const resetEntry = await PasswordReset.findOne({
       where: {
         token: hashedToken,
@@ -157,22 +175,28 @@ exports.setPassword = async (req, res) => {
     });
 
     if (!resetEntry) {
-      return res.status(400).json({ message: "Token tidak valid atau telah kedaluwarsa" });
+      return res
+        .status(400)
+        .json({ message: "Token tidak valid atau telah kedaluwarsa" });
     }
 
-    const user = await User.findOne({ where: { email: resetEntry.email } });
-    if (!user) {
-      return res.status(404).json({ message: "Pengguna tidak ditemukan" });
-    }
+    // Ambil email dari entri token
+    const email = resetEntry.email;
 
+    // Hash password baru
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await user.update({ password: hashedPassword });
 
-    await PasswordReset.destroy({ where: { id: resetEntry.id } });
+    // Update password di tabel Users
+    await User.update({ password: hashedPassword }, { where: { email } });
 
-    res.status(200).json({ message: "Password berhasil diatur ulang" });
+    // Hapus token reset (opsional untuk keamanan lebih)
+    await PasswordReset.destroy({
+      where: { token: hashedToken },
+    });
+
+    res.status(200).json({ message: "Password berhasil diperbarui" });
   } catch (error) {
-    logger.error(`Error in setPassword: ${error.message}`);
+    logger.error(`Error in setNewPassword: ${error.message}`);
     res.status(500).json({ message: "Terjadi kesalahan pada server" });
   }
 };
@@ -181,11 +205,6 @@ exports.setPassword = async (req, res) => {
 exports.forgotPasswordLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
-  message: "Terlalu banyak permintaan, coba lagi nanti."
+  message: "Terlalu banyak permintaan, coba lagi nanti.",
 });
 
-exports.setPasswordLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: "Terlalu banyak permintaan, coba lagi nanti."
-});
