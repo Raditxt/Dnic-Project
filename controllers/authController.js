@@ -153,14 +153,19 @@ exports.verifyToken = async (req, res) => {
 
 // Ganti password dengan password baru
 exports.setNewPassword = async (req, res) => {
-  const { token, newPassword } = req.body;
+  const { token, newPassword, confirmPassword } = req.body;
 
   try {
     // Validasi input
-    if (!token || !newPassword) {
+    if (!token || !newPassword || !confirmPassword) {
       return res
         .status(400)
-        .json({ message: "Token dan password baru wajib diisi" });
+        .json({ message: "Token dan password baru serta konfirmasi password wajib diisi" });
+    }
+
+    // Pastikan password baru dan konfirmasi password sama
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "Password baru dan konfirmasi password tidak sama" });
     }
 
     // Hash token yang diterima
@@ -200,6 +205,7 @@ exports.setNewPassword = async (req, res) => {
     res.status(500).json({ message: "Terjadi kesalahan pada server" });
   }
 };
+
 
 // Rate Limiting
 exports.forgotPasswordLimiter = rateLimit({

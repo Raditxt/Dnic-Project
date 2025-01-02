@@ -1,60 +1,59 @@
 document.getElementById("verifyCodeForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const code = document.getElementById("code").value.trim(); // Mengambil kode yang dimasukkan
+  const token = document.getElementById("token").value.trim();  // Mengambil token dari input field
   const feedback = document.getElementById("feedback");
 
-  // Validasi: pastikan kode tidak kosong
-  if (!code) {
+  feedback.style.display = "none"; // Reset feedback visibility
+
+  if (!token) {
     feedback.style.display = "block";
     feedback.className = "alert alert-warning";
-    feedback.textContent = "Please enter the verification code.";
+    feedback.textContent = "Please enter the verification token.";
     return;
   }
 
   try {
-    const response = await fetch("/api/auth/verify-code", {
+    // Mengirimkan token ke backend
+    const response = await fetch("http://localhost:5000/api/auth/verify-token", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ code }),
+      body: JSON.stringify({ token }),  // Mengirimkan token ke server
     });
 
     const result = await response.json();
 
     if (response.ok) {
-      // Menampilkan feedback jika kode berhasil diverifikasi
       feedback.style.display = "block";
       feedback.className = "alert alert-success";
-      feedback.textContent = result.message || "Code verified successfully. Redirecting...";
-      
-      // Redirect setelah 2 detik
+      feedback.textContent = result.message || "Token verified successfully. Redirecting...";
+
+      // Mengarahkan ke halaman setpassword.html dengan membawa token
       setTimeout(() => {
-        window.location.href = "/set-new-password.html"; // Halaman untuk reset password
+        window.location.href = `/setpassword.html?token=${token}`; // Token dibawa ke setpassword.html
       }, 2000);
     } else {
-      // Menampilkan feedback jika terjadi kesalahan
       feedback.style.display = "block";
       feedback.className = "alert alert-danger";
-      feedback.textContent = result.message || "Invalid code. Please try again.";
+      feedback.textContent = result.message || "Invalid token. Please try again.";
     }
-  } catch (err) {
-    // Menangani kesalahan jaringan
+  } catch (error) {
     feedback.style.display = "block";
     feedback.className = "alert alert-danger";
     feedback.textContent = "Network error. Please try again later.";
   }
 });
 
-// Resend code handler
 document.getElementById("resendCode").addEventListener("click", async (e) => {
   e.preventDefault();
 
   const feedback = document.getElementById("feedback");
+  feedback.style.display = "none"; // Reset feedback visibility
 
   try {
-    const response = await fetch("/api/auth/resend-code", {
+    const response = await fetch("/api/auth/resendcode", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,23 +62,12 @@ document.getElementById("resendCode").addEventListener("click", async (e) => {
 
     const result = await response.json();
 
-    // Feedback untuk pengguna setelah mengirim ulang kode
     feedback.style.display = "block";
     feedback.className = response.ok ? "alert alert-success" : "alert alert-danger";
     feedback.textContent = result.message || "Code resent successfully.";
-  } catch (err) {
-    // Menangani kesalahan jaringan saat mengirim ulang kode
+  } catch (error) {
     feedback.style.display = "block";
     feedback.className = "alert alert-danger";
     feedback.textContent = "Network error. Please try again later.";
   }
-});
-
-// Toggle password visibility
-document.getElementById("togglePassword").addEventListener("click", function (e) {
-  const passwordInput = document.getElementById("code");
-  const type =
-    passwordInput.getAttribute("type") === "password" ? "text" : "password";
-  passwordInput.setAttribute("type", type);
-  this.classList.toggle("fa-eye-slash");
 });
