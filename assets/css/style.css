@@ -61,6 +61,7 @@
   --tp-common-blue: #eeeefd;
   --tp-common-orange: #ff7425;
   --tp-common-red: #e01e5a;
+  --tp-common-red-2: #ff7979d7;
   --tp-common-sky: #1edbdc;
   --tp-common-deep-blue: #4c40f7;
   --tp-heading-primary: #151718;
@@ -4336,7 +4337,7 @@ input[type="color"] {
 }
 
 .tp-service-item {
-  background-color: var(--tp-common-yellow-2);
+  background-color: var(--tp-common-red-2);
   padding: 60px;
   border-radius: 20px;
 }
@@ -4367,7 +4368,7 @@ input[type="color"] {
   line-height: 1;
 }
 .tp-service-item__button-link a:hover {
-  color: var(--tp-common-yellow);
+  color: var(--tp-common-red);
 }
 @media (max-width: 767px) {
   .tp-service-item__button-link a {
@@ -4387,7 +4388,7 @@ input[type="color"] {
   height: 30px;
   width: 30px;
   border-radius: 50%;
-  background-color: var(--tp-common-yellow);
+  background-color: var(--tp-common-red);
 }
 @media (max-width: 767px) {
   .tp-service-item__button-link a span::after {
@@ -4405,7 +4406,7 @@ input[type="color"] {
 .tp-service-item__icon span {
   height: 67px;
   width: 67px;
-  background-color: var(--tp-common-yellow);
+  background-color: var(--tp-common-red);
   display: inline-block;
   text-align: center;
   line-height: 67px;
