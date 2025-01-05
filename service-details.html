@@ -62,9 +62,7 @@
                 </a>
               </div>
             </div>
-            <div
-              class="col-xl-10 col-lg-10 col-md-8 col-6 d-flex justify-content-end"
-            >
+            <div class="col-xl-10 col-lg-10 col-md-8 col-6 d-flex justify-content-end">
               <div class="tp-main-menu d-none d-xl-block">
                 <nav id="mobile-menu">
                   <ul>
@@ -79,9 +77,9 @@
               <div class="tp-header-right">
                 <ul>
                   <li class="d-none d-md-inline-block">
-                    <a href="cart.html"
-                      ><i class="fal fa-shopping-basket"></i><span>03</span></a
-                    >
+                    <a href="cart.html">
+                      <i class="fal fa-shopping-basket"></i><span>03</span>
+                    </a>
                     <div class="minicart">
                       <div>
                         <div class="cart-img">
@@ -137,21 +135,23 @@
                       </div>
                       <div>
                         <div class="checkout-link">
-                          <a class="tp-btn-orange-radius w-100" href="cart.html"
-                            >Shopping Cart</a
-                          >
-                          <a class="tp-btn-radius-2 w-100" href="checkout.html"
-                            >Checkout</a
-                          >
+                          <a class="tp-btn-orange-radius w-100" href="cart.html">Shopping Cart</a>
+                          <a class="tp-btn-radius-2 w-100" href="checkout.html">Checkout</a>
                         </div>
                       </div>
                     </div>
                   </li>
-
-                  <li>
-                    <a class="tp-menu-bar" href="javascript:void(0)"
-                      ><i class="fas fa-bars"></i
-                    ></a>
+                  <!-- Ikon Bars (hanya untuk mobile) -->
+                  <li class="d-md-none">
+                    <a class="tp-menu-bar" href="javascript:void(0)">
+                      <i class="fas fa-bars"></i>
+                    </a>
+                  </li>
+                  <!-- Tombol Login dan Sign Up (hanya untuk desktop) -->
+                  <li class="d-none d-md-inline-block">
+                    <button class="Login">
+                      <a href="login.html">Log in</a>
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -159,6 +159,7 @@
           </div>
         </div>
       </div>
+
       <!-- tp-header-area-end -->
     </header>
 
@@ -167,12 +168,6 @@
       <div class="tpoffcanvas">
         <div class="tpoffcanvas__close-btn">
           <button class="close-btn"><i class="fal fa-times"></i></button>
-        </div>
-        <div class="tpoffcanvas__logo pt-50">
-          <li>
-            <button class="Login"><a href="login.html">Log in</a></button>
-            <button class="Sign-up"><a href="signup.html">Sign up</a></button>
-          </li>
         </div>
         <div class="mobile-menu"></div>
         <div class="tpoffcanvas__info">
@@ -226,21 +221,26 @@
     <main>
       <!-- breadcrumb area start -->
       <section
-        class="breadcrumb__area breadcrumb-height include-bg p-relative tp-case-area case-bg case-space"
-        style="background: linear-gradient(to right, #f9ec11, #f9ec11)"
-      >
+        class="breadcrumb__area breadcrumb-height include-bg p-relative"
+        class="tp-case-area case-bg case-space" style="background: linear-gradient(to right, #F9EC11, #F9EC11);">
         <div class="container">
           <div class="row">
             <div class="col-xxl-12">
               <div class="breadcrumb__content">
-                <h3 class="breadcrumb__title">Service Details</h3>
+                <h3
+                  class="breadcrumb__title wow tpfadeUp"
+                  data-wow-duration=".7s"
+                  data-wow-delay=".5s"
+                >
+                  D-NIC PROJECT Service
+                </h3>
                 <div
                   class="breadcrumb__list wow tpfadeUp"
                   data-wow-duration=".9s"
                 >
                   <span><a href="#">Home</a></span>
                   <span class="dvdr"><i class="fa fa-angle-right"></i></span>
-                  <span>Service Details</span>
+                  <span>Our Service</span>
                 </div>
               </div>
             </div>
@@ -248,7 +248,6 @@
         </div>
       </section>
       <!-- breadcrumb area end -->
-
       <!-- sv-details area start -->
       <div class="sv-details-area pt-120">
         <div class="container">
