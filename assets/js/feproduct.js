@@ -15,7 +15,9 @@ async function fetchProducts() {
               <div class="tpproduct__img">
                 <img class="w-100" src="http://localhost:5000${product.image_url}" alt="${product.name}" />
                 <div class="tp-product-icon">
-                  <a href="cart.html"><i class="fal fa-shopping-basket"></i></a>
+                  <a href="#" class="add-to-cart" data-id="${product.id}">
+                    <i class="fal fa-shopping-basket"></i>
+                  </a>
                   <a href="shop-details.html"><i class="fal fa-heart"></i></a>
                 </div>
               </div>
@@ -32,6 +34,40 @@ async function fetchProducts() {
       console.error('Error fetching products:', err);
     }
   }
+  
+  // Event delegation untuk tombol Add to Cart
+  document.getElementById('product-area').addEventListener('click', async event => {
+    if (event.target.closest('.add-to-cart')) {
+      event.preventDefault(); // Mencegah reload halaman
+      const button = event.target.closest('.add-to-cart');
+      const productId = button.getAttribute('data-id'); // Ambil ID produk
+      const userId = 1; // Contoh ID user, sesuaikan dengan sistem autentikasi Anda
+  
+      try {
+        const response = await fetch('http://localhost:5000/api/cart/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            productId: productId,
+            userId: userId,
+            quantity: 1, // Default quantity 1
+          }),
+        });
+  
+        const result = await response.json();
+  
+        if (response.ok) {
+          alert('Produk berhasil ditambahkan ke keranjang!');
+        } else {
+          alert(result.message || 'Gagal menambahkan produk ke keranjang.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  });
   
   // Panggil fungsi fetchProducts saat halaman dimuat
   window.onload = fetchProducts;

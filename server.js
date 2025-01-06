@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const sequelize = require('./config/database'); // Mengimpor koneksi database
 const authRoutes = require('./routes/authRoutes'); // Mengimpor routes untuk autentikasi
 const productRoutes = require('./routes/productroutes'); // Mengimpor routes untuk produk
+const cartRoutes = require('./routes/cartRoutes'); // Mengimpor routes untuk keranjang
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config(); // Menggunakan dotenv untuk variabel lingkungan
@@ -22,6 +23,7 @@ app.use(bodyParser.json());
 // Routes
 app.use('/api/auth', authRoutes); // Menambahkan route untuk autentikasi
 app.use('/api/products', productRoutes); // Menambahkan route untuk produk
+app.use('/api/cart', cartRoutes); // Menambahkan route untuk keranjang
 
 // Menyajikan file statis dari folder 'public/images'
 app.use('/images', express.static(path.join(__dirname, 'public', 'images')));
