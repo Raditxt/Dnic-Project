@@ -1,24 +1,57 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class TransactionTemplate extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
+  const Transactions = sequelize.define(
+    'Transactions',
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Users', // Nama tabel relasi
+          key: 'id',
+        },
+      },
+      total_amount: {
+        type: DataTypes.DECIMAL(10, 2), // Format angka desimal
+        allowNull: false,
+      },
+      status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: 'pending', // Status default
+      },
+      payment_id: {
+        type: DataTypes.STRING,
+        allowNull: true, // ID dari payment gateway seperti Midtrans
+      },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: sequelize.literal('NOW()'),
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: sequelize.literal('NOW()'),
+      },
+    },
+    {
+      tableName: 'Transactions',
+      timestamps: true, // Untuk createdAt dan updatedAt
+      underscored: true, // Gaya penamaan snake_case
     }
-  }
-  TransactionTemplate.init({
-    transactionId: DataTypes.INTEGER,
-    templateId: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'TransactionTemplate',
-  });
-  return TransactionTemplate;
+  );
+
+  Transactions.associate = (models) => {
+    Transactions.belongsTo(models.Users, {
+      foreignKey: 'user_id',
+      onDelete: 'CASCADE',
+    });
+  };
+
+  return Transactions;
 };
