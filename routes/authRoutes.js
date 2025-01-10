@@ -1,19 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const { register, login, forgotPassword, verifyToken,  forgotPasswordLimiter, setNewPassword } = require('../controllers/authController'); // Import fungsi resetPassword
+const AuthController = require('../controllers/authController'); // Mengimpor kelas AuthController
 
 // Endpoint untuk registrasi pengguna baru
-router.post('/register', register);
+router.post('/register', AuthController.register);
 
 // Endpoint untuk login pengguna
-router.post('/login', login);
+router.post('/login', AuthController.login);
 
-router.post('/forgot-password', forgotPasswordLimiter, forgotPassword);
+// Endpoint untuk mengirimkan link reset password
+router.post('/forgot-password', AuthController.forgotPasswordLimiter(), AuthController.forgotPassword);
 
-router.post('/verify-token', verifyToken);
+// Endpoint untuk memverifikasi token reset password
+router.post('/verify-token', AuthController.verifyToken);
 
-router.post('/set-password', setNewPassword);
-
-
+// Endpoint untuk mengganti password dengan password baru
+router.post('/set-password', AuthController.setNewPassword);
 
 module.exports = router;
