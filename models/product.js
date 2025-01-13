@@ -1,39 +1,53 @@
+// models/Product.js
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // Mengimpor koneksi dari database.js
+const sequelize = require('../config/database'); // Sesuaikan dengan konfigurasi DB Anda
 
-const Product = sequelize.define('Product', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true, // ID auto increment
-    },
+class Product {
+    constructor(id, name, price, stock) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+    }
+
+    // Getter untuk stock
+    getStock() {
+        return this.stock;
+    }
+
+    // Mengurangi stock setelah checkout
+    reduceStock(quantity) {
+        if (quantity <= this.stock) {
+            this.stock -= quantity;
+        } else {
+            throw new Error('Stok tidak mencukupi');
+        }
+    }
+
+    // Metode untuk mendapatkan data produk dari DB
+    static async getAll() {
+        return await sequelize.models.Product.findAll();
+    }
+
+    // Metode untuk menemukan produk berdasarkan ID
+    static async findById(id) {
+        return await sequelize.models.Product.findByPk(id);
+    }
+}
+
+sequelize.define('Product', {
     name: {
         type: DataTypes.STRING,
-        allowNull: false, // Nama produk tidak boleh kosong
-    },
-    image_url: {
-        type: DataTypes.STRING,
-        allowNull: false, // URL gambar produk tidak boleh kosong
+        allowNull: false
     },
     price: {
         type: DataTypes.DECIMAL(10, 2),
-        allowNull: false, // Harga produk tidak boleh kosong
-    },
-    description: {
-        type: DataTypes.TEXT,
-        allowNull: true, // Deskripsi bisa kosong
-    },
-    category: {
-        type: DataTypes.STRING,
-        allowNull: true, // Kategori produk (misalnya "Elektronik", "Fashion", dll)
+        allowNull: false
     },
     stock: {
         type: DataTypes.INTEGER,
-        allowNull: false, // Jumlah stok produk
-        defaultValue: 0,  // Default ke 0 jika stok tidak ditentukan
-    },
-}, {
-    timestamps: true, // Menambahkan createdAt dan updatedAt secara otomatis
+        allowNull: false
+    }
 });
 
 module.exports = Product;

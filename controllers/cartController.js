@@ -1,63 +1,38 @@
-const { Carts} = require('../models');
-const { Products } = require ('../models')
-// Add product to cart
-exports.addToCart = async (req, res) => {
-  const { user_id, product_id, quantity } = req.body;
+// controllers/cartController.js
+const Cart = require('../models/cart');
+const Product = require('../models/Product');
 
-  // Validate product existence and stock
-  const product = await Products.findByPk(product_id);
-  if (!product || product.stock < quantity) {
-    return res.status(400).json({ message: 'Product not available or insufficient stock.' });
-  }
+class CartController {
+    // Menambahkan produk ke cart
+    static async addToCart(req, res) {
+        const { userId, productId, quantity } = req.body;
+        try {
+            const product = await Product.findById(productId);
+            if (!product) {
+                return res.status(404).json({ message: 'Produk tidak ditemukan' });
+            }
 
-  // Check if product already in cart
-  const cartItem = await Carts.findOne({ where: { user_id, product_id } });
+            if (product.stock < quantity) {
+                return res.status(400).json({ message: 'Stok tidak cukup' });
+            }
 
-  if (cartItem) {
-    cartItem.quantity += quantity;
-    cartItem.subtotal = cartItem.quantity * product.price;
-    await cartItem.save();
-  } else {
-    await Carts.create({
-      user_id,
-      product_id,
-      quantity,
-      subtotal: quantity * product.price,
-    });
-  }
+            const newCartItem = await Cart.addItem(userId, productId, quantity);
+            res.status(201).json({ message: 'Produk berhasil ditambahkan ke keranjang', cartItem: newCartItem });
+        } catch (error) {
+            res.status(500).json({ message: 'Gagal menambahkan produk ke keranjang', error: error.message });
+        }
+    }
 
-  res.status(200).json({ message: 'Product added to cart.' });
-};
+    // Menampilkan produk dalam keranjang pengguna
+    static async getCart(req, res) {
+        const { userId } = req.query;
+        try {
+            const cartItems = await Cart.getItemsForUser(userId);
+            res.status(200).json(cartItems);
+        } catch (error) {
+            res.status(500).json({ message: 'Gagal memuat keranjang', error: error.message });
+        }
+    }
+}
 
-// Get cart items
-exports.getCart = async (req, res) => {
-  const { user_id } = req.query;
-
-  const cartItems = await Carts.findAll({
-    where: { user_id },
-    include: [{ model: Products, attributes: ['name', 'price', 'image_url'] }],
-  });
-
-  const formattedCart = cartItems.map(item => ({
-    cart_id: item.id,
-    product_name: item.Product.name,
-    price: item.Product.price,
-    quantity: item.quantity,
-    subtotal: item.subtotal,
-  }));
-
-  res.status(200).json(formattedCart);
-};
-
-// Remove product from cart
-exports.removeFromCart = async (req, res) => {
-  const { cart_id } = req.params;
-
-  const cartItem = await Carts.findByPk(cart_id);
-  if (!cartItem) {
-    return res.status(404).json({ message: 'Cart item not found.' });
-  }
-
-  await cartItem.destroy();
-  res.status(200).json({ message: 'Product removed from cart.' });
-};
+module.exports = CartController;

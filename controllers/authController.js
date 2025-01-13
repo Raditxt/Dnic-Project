@@ -1,12 +1,12 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
-const PasswordReset = require("../models/PasswordReset");
 const crypto = require("crypto");
-const sendMail = require("../config/mailConfig"); // Fungsi pengiriman email
+const { Op } = require("sequelize");
 const rateLimit = require("express-rate-limit");
 const winston = require("winston");
-const { Op } = require("sequelize");
+const User = require("../models/User");
+const PasswordReset = require("../models/PasswordReset");
+const sendMail = require("../config/mailConfig"); // Fungsi pengiriman email
 
 class AuthController {
   // Konfigurasi Winston untuk logging
@@ -89,7 +89,7 @@ class AuthController {
     try {
       const user = await User.findOne({ where: { email } });
       if (!user) {
-        return res.status(404).json({ message: "Email tidak ditemukan" });
+        return res.status(404).json({ message: "Email not found" });
       }
 
       const resetToken = crypto.randomBytes(32).toString("hex");
@@ -98,7 +98,7 @@ class AuthController {
       await PasswordReset.create({
         email,
         token: hashedToken,
-        expiresAt: Date.now() + 10 * 60 * 1000, // 10 menit
+        expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
       });
 
       const emailSubject = "Reset Password DNIC Project";
@@ -106,10 +106,10 @@ class AuthController {
 
       await sendMail(email, emailSubject, emailText);
 
-      res.status(200).json({ message: "Token reset password telah dikirim ke email Anda" });
+      res.status(200).json({ message: "Password reset token sent to email" });
     } catch (error) {
       this.logger.error(`Error in forgotPassword: ${error.message}`);
-      res.status(500).json({ message: "Terjadi kesalahan pada server" });
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 
@@ -128,13 +128,13 @@ class AuthController {
       });
 
       if (!resetEntry) {
-        return res.status(400).json({ message: "Token tidak valid atau telah kedaluwarsa" });
+        return res.status(400).json({ message: "Invalid or expired token" });
       }
 
-      res.status(200).json({ message: "Token valid" });
+      res.status(200).json({ message: "Token is valid" });
     } catch (error) {
       this.logger.error(`Error in verifyToken: ${error.message}`);
-      res.status(500).json({ message: "Terjadi kesalahan pada server" });
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 
@@ -143,20 +143,16 @@ class AuthController {
     const { token, newPassword, confirmPassword } = req.body;
 
     try {
-      // Validasi input
       if (!token || !newPassword || !confirmPassword) {
-        return res.status(400).json({ message: "Token dan password baru serta konfirmasi password wajib diisi" });
+        return res.status(400).json({ message: "Token and passwords are required" });
       }
 
-      // Pastikan password baru dan konfirmasi password sama
       if (newPassword !== confirmPassword) {
-        return res.status(400).json({ message: "Password baru dan konfirmasi password tidak sama" });
+        return res.status(400).json({ message: "Passwords do not match" });
       }
 
-      // Hash token yang diterima
       const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
-      // Cari token reset di tabel PasswordResets
       const resetEntry = await PasswordReset.findOne({
         where: {
           token: hashedToken,
@@ -165,34 +161,28 @@ class AuthController {
       });
 
       if (!resetEntry) {
-        return res.status(400).json({ message: "Token tidak valid atau telah kedaluwarsa" });
+        return res.status(400).json({ message: "Invalid or expired token" });
       }
 
-      // Ambil email dari entri token
       const email = resetEntry.email;
-
-      // Hash password baru
       const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-      // Update password di tabel Users
       await User.update({ password: hashedPassword }, { where: { email } });
-
-      // Hapus token reset (opsional untuk keamanan lebih)
       await PasswordReset.destroy({ where: { token: hashedToken } });
 
-      res.status(200).json({ message: "Password berhasil diperbarui" });
+      res.status(200).json({ message: "Password successfully updated" });
     } catch (error) {
       this.logger.error(`Error in setNewPassword: ${error.message}`);
-      res.status(500).json({ message: "Terjadi kesalahan pada server" });
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 
-  // Rate Limiting
+  // Rate Limiting untuk lupa password
   forgotPasswordLimiter() {
     return rateLimit({
-      windowMs: 15 * 60 * 1000,
-      max: 5,
-      message: "Terlalu banyak permintaan, coba lagi nanti.",
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      max: 5, // Maximum 5 requests per window
+      message: "Too many requests, please try again later.",
     });
   }
 }

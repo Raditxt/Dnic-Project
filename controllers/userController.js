@@ -1,18 +1,54 @@
-const { User } = require('../models/User'); // Sesuaikan dengan path model Anda
+const bcrypt = require('bcrypt');
+const winston = require('winston');
+const { User } = require('../models/User');
 
-class UserController {
+// BaseController sebagai superclass
+class BaseController {
+  constructor() {
+    this.logger = winston.createLogger({
+      level: 'info',
+      transports: [
+        new winston.transports.Console(),
+        new winston.transports.File({ filename: 'error.log', level: 'error' }),
+      ],
+    });
+  }
+
+  handleError(res, error, message = 'Internal server error') {
+    this.logger.error(message, { error });
+    res.status(500).json({ error: message });
+  }
+}
+
+// UserController yang mewarisi BaseController
+class UserController extends BaseController {
+  constructor() {
+    super();
+    this.resourceName = 'User';
+  }
+
   // CREATE: Menambahkan user baru
   async createUser(req, res) {
     try {
+      const { email, phone_number, password } = req.body;
+
+      // Validasi input
+      if (!email || !phone_number || !password) {
+        return res.status(400).json({ error: 'All fields are required' });
+      }
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
       const user = await User.create({
-        email: req.body.email,
-        phone_number: req.body.phone_number,
-        password: req.body.password, // Pastikan untuk mengenkripsi password jika perlu
+        email,
+        phone_number,
+        password: hashedPassword,
       });
-      res.status(201).json(user);
+
+      res.status(201).json({ message: `${this.resourceName} created successfully`, user });
     } catch (error) {
-      console.error('Error saat menambahkan user:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      this.handleError(res, error, `Error creating ${this.resourceName}`);
     }
   }
 
@@ -22,8 +58,7 @@ class UserController {
       const users = await User.findAll();
       res.status(200).json(users);
     } catch (error) {
-      console.error('Error saat mengambil data users:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      this.handleError(res, error, `Error fetching ${this.resourceName}s`);
     }
   }
 
@@ -31,19 +66,25 @@ class UserController {
   async updateUser(req, res) {
     try {
       const { email, phone_number } = req.body;
+
+      // Validasi input
+      if (!email || !phone_number) {
+        return res.status(400).json({ error: 'Email and phone number are required' });
+      }
+
       const [updated] = await User.update(
-        { phone_number: phone_number },
-        { where: { email: email } }
+        { phone_number },
+        { where: { email } }
       );
+
       if (updated) {
-        const updatedUser = await User.findOne({ where: { email: email } });
-        res.status(200).json(updatedUser);
+        const updatedUser = await User.findOne({ where: { email } });
+        res.status(200).json({ message: `${this.resourceName} updated successfully`, updatedUser });
       } else {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: `${this.resourceName} not found` });
       }
     } catch (error) {
-      console.error('Error saat mengupdate user:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      this.handleError(res, error, `Error updating ${this.resourceName}`);
     }
   }
 
@@ -51,17 +92,22 @@ class UserController {
   async deleteUser(req, res) {
     try {
       const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({ error: 'Email is required' });
+      }
+
       const deleted = await User.destroy({
-        where: { email: email },
+        where: { email },
       });
+
       if (deleted) {
-        res.status(200).json({ message: 'User deleted successfully' });
+        res.status(200).json({ message: `${this.resourceName} deleted successfully` });
       } else {
-        res.status(404).json({ error: 'User not found' });
+        res.status(404).json({ error: `${this.resourceName} not found` });
       }
     } catch (error) {
-      console.error('Error saat menghapus user:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      this.handleError(res, error, `Error deleting ${this.resourceName}`);
     }
   }
 }

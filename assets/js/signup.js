@@ -22,6 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
     icon.addEventListener('click', () => togglePassword(icon.previousElementSibling.id));
   });
 
+  // Phone number input event listener (only allows numbers and checks length)
+  document.getElementById('phoneNumber').addEventListener('input', function () {
+    // Hanya angka yang boleh dimasukkan
+    this.value = this.value.replace(/\D/g, ''); 
+
+    // Membatasi panjang input menjadi 12 digit maksimal
+    if (this.value.length > 12) {
+      this.value = this.value.slice(0, 12);
+    }
+  });
+
   // Form submission handler
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -54,6 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (password !== confirm_password) {
       alert('Passwords do not match.');
+      return;
+    }
+
+    // Phone number validation (11 or 12 digits)
+    if (phone_number.length < 11 || phone_number.length > 12) {
+      alert('Phone number must be between 11 and 12 digits.');
       return;
     }
 
